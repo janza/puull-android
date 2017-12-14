@@ -10,14 +10,11 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -30,16 +27,6 @@ public class StartPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_page);
-
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        String type = intent.getType();
-
-        if (Intent.ACTION_SEND.equals(action) && type != null) {
-            if (type.startsWith("image/")) {
-                handleSendImage(intent); // Handle single image being sent
-            }
-        }
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -61,19 +48,6 @@ public class StartPage extends AppCompatActivity {
                 openImageDialog();
             }
         });
-    }
-
-    void handleSendImage(Intent intent) {
-        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        if (imageUri != null) {
-            Log.d(TAG, "handleSendImage: sending image from intent");
-            try {
-                InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                uploadImage(inputStream);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void openImageDialog() {
@@ -138,10 +112,6 @@ public class StartPage extends AppCompatActivity {
     }
 
     private void uploadImage(File picturePath) {
-        ImageUplodader.upload(picturePath, uploadHandler());
-    }
-
-    private void uploadImage(InputStream picturePath) {
         ImageUplodader.upload(picturePath, uploadHandler());
     }
 }
